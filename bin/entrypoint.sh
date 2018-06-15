@@ -14,19 +14,19 @@ else
 
 fi
 
-#TODO Take host and port from config.
-
-until nc -z -v -w30 $OPLA_BACKEND_DATABASE_HOST $OPLA_BACKEND_DATABASE_PORT; do
-	echo "Waiting for database connection..."
-	# wait for 2 seconds before check again
-	sleep 1
-done
-
 if [ -n "$SKIP_MIGRATION" -a "$SKIP_MIGRATION" = 'true' ]; then
 	echo "Skipping migrations."
-
 else
+	until nc -z -v -w30 $OPLA_BACKEND_DATABASE_HOST $OPLA_BACKEND_DATABASE_PORT; do
+		echo "Waiting for database connection..."
+		# wait for 2 seconds before check again
+		sleep 1
+	done
 	./bin/opla migrations up --non-interactive
 fi
 
-exec node --inspect=0.0.0.0:9229 dist/
+if [ -n "$MIGRATIONS_ONLY" -a "$MIGRATIONS_ONLY" = 'true' ]; then
+	echo "MIGRATIONS_ONLY. Not executing node."
+else
+	exec node --inspect=0.0.0.0:9229 dist/
+fi
