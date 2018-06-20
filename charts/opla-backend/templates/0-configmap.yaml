@@ -5,7 +5,6 @@ metadata:
   name: db-scripts
   namespace: {{ .Values.namespace }}
 data:
-{{ (.Files.Glob "tmp/migrations/*.sql").AsConfig | indent 2 }}
   90-create-application.sql: |-
 {{ include ( print $.Template.BasePath "/_90-create-application.sql") . | indent 4 }}
   91-insert-admin.sql: |-

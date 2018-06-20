@@ -16,7 +16,7 @@ env:
 tasks:
   build:
     cmd: |-
-      eval $(myke -v=0 _app_version)
+      $myke _prepare
       docker build \
         -t {{ .REPO }}:{{ .TAG }} \
         .
@@ -33,8 +33,6 @@ tasks:
   _prepare:
     cmd: |-
       eval $(myke -v=0 _app_version)
-      mkdir -p {{.CHART_DIR}}/tmp/migrations/
-      cp migrations/sqls/*.sql {{.CHART_DIR}}/tmp/migrations/
 
   test:
     cmd: |-
